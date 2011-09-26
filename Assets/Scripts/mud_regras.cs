@@ -75,7 +75,7 @@ public class mud_regras : MonoBehaviour
 		nGlobalId = 0;
 		
 		// Encontra a sala inicial na hierarquia
-		startRoom = GameObject.Find("StartRoom").GetComponent<MudCRoom>();
+		startRoom = GameObject.Find("Room1").GetComponent<MudCRoom>();
 		
 		// Preenche a lista com todos os comandos possíveis
 		MudCommands mudCommand = new MudCommands();
