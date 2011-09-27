@@ -84,8 +84,7 @@ public class mud_regras : MonoBehaviour
 		scriptServer = gameObject.GetComponent<MudServer>();
 		//	MudServer scriptServer = gameObject.GetComponent("MudServer") as MudServer;
 		
-		// FIXME:
-		// Examinar
+		// Examinar ao entrar na sala
 		mudCommand.eVerb = MudVerbs.examinar;
 		mudCommands.Add(mudCommand);
 		
@@ -95,6 +94,7 @@ public class mud_regras : MonoBehaviour
 	void Update()
 	{
 		
+		// FIXME: não é melhor usar uma fila? Pode dar conflito na execução dos comandos de clientes diversos...
 		// Processa a lista de mensagens
 		if(listaDeMensagens.Count != 0) {
 			listaDeMensagens.ForEach(ProcessMessage);
@@ -123,11 +123,12 @@ public class mud_regras : MonoBehaviour
 		
 		// Cria uma nova instância de Player
 		GameObject tempPlayer = Instantiate(Resources.Load("Player")) as GameObject;
-		tempPlayer.name = stPlayerName;
 		// Troca o nome do objeto para o nome do player
-		// Preenche a descrição com Examinaro nome do jogador
+		tempPlayer.name = stPlayerName;
+		// Preenche a descrição com o nome do jogador
 		tempPlayer.GetComponent<MudCPlayer>().SetDescription(stPlayerName);
-		Debug.Log("AddNewPlayer: getcomponent: " + tempPlayer.GetComponent<MudCPlayer>());
+		// Ajusta o nome do jogador
+		tempPlayer.GetComponent<MudCPlayer>().Name = stPlayerName;
 		// Guarda o identificador de rede
 		tempPlayer.GetComponent<MudCPlayer>().SetNetworkPlayer(npPlayer);
 		// DEBUG
@@ -141,43 +142,16 @@ public class mud_regras : MonoBehaviour
 		// Executa o examinar obrigatório
 		string stWelcomeMsg = startRoom.Examinar(tempPlayer.GetComponent<MudCPlayer>());
 		
+		// Avisa ao demais jogadores da sala
+		string stMsgToOthers = "Jogador '" + stPlayerName + "' entrou na sala.";
+		TellEverybodyElseInThisRoom(startRoom, tempPlayer.GetComponent<MudCPlayer>(), stMsgToOthers);			
+		
 		return stWelcomeMsg;
 	}
-		/****************************************************************************************************************/		
-		// TESTES!!!
-		// TODO
-		/* 1 - A sala consegue dizer que está nela? Imprescindível para que seja possível dar uma examinar
-		 * na sala -> OK!!!
-		 */		
-		/*	foreach(GameObject itPlayer in listPlayers) {
-				Debug.Log("Player esta na sala " + itPlayer.GetComponent<MudCPlayer>().roomIn);	
-			
-			if(itPlayer.GetComponent<MudCPlayer>().roomIn == startRoom) {
-				Debug.Log("Esta na sala correta...");
-			}
-			else {
-				Debug.Log("Deu porcaria...");	
-			}
-		}
-		*/		
-		/* 2 - fazer um pick de alguma coisa garante que vou ter acesso à ela? Por exemplo, fazer um pick na chave
-		 * deve retirá-la da sala e colocá-la no player --> OK!!!
-		 */		
-		// Dá o pick na chave
-		/*		MudCGenericGameObject itemPego = startRoom.GetComponent<MudCGenericGameObject>().ObjectsIn[0]; // Tá ruim isso
-		Debug.Log("Tentando pegar " + itemPego);
-		
-		// Testar se é pickable
-		if(itemPego.GetComponent<MudCGenericGameObject>().Pickable) {
-			// Passa a chave para o player
-			tempPlayer.GetComponent<MudCPlayer>().ObjectsIn.Add(itemPego);
-			// Remove da Sala
-			startRoom.GetComponent<MudCGenericGameObject>().ObjectsIn.Remove(itemPego);
-		}
-	*/		
+
 		
 	
-						/*
+	/*
 	 * Funções de Comunicação e Processamento de Mensagens
 	 */
 
@@ -203,7 +177,7 @@ public class mud_regras : MonoBehaviour
 		msgRecebida.stSender = stPlayer;
 		msgRecebida.stMsg = stMsg;
 		// FIXME: estamos obtendo o network player buscando na hierarquia por seu nome. Não tem jeito melhor?
-		msgRecebida.npSender = GameObject.Find(stPlayer).GetComponent<MudCPlayer>().networkPlayer;
+		msgRecebida.npSender = GameObject.Find(stPlayer).GetComponent<MudCPlayer>().GetNetworkPlayer();
 		
 		// Adiciona a mensagem recebida à lista de mensagens
 		listaDeMensagens.Add(msgRecebida);
@@ -234,11 +208,11 @@ public class mud_regras : MonoBehaviour
 				mudCommand.stVerbo = stWord;
 			
 			if(nIdx == 1)
-				mudCommand.stParam1 = stWord;
-			// Primeiro parâmetro, se houver
-			if(nIdx >= 2)
-				// Segundo parâmetro, se houver
-				mudCommand.stParam2 += stWord + " ";
+				mudCommand.stParam1 = stWord; // Primeiro parâmetro, se houver
+			
+			if(nIdx >= 2)	{
+				mudCommand.stParam2 += stWord + " ";	// Segundo parâmetro, se houver
+			}
 			
 			nIdx++;
 		}
@@ -427,6 +401,10 @@ public class mud_regras : MonoBehaviour
 						
 						// Porta trancada
 						stReturnMsg += "A porta " + door.name + " esta trancada.";
+						// Avisa os outros jogadores
+						string stMsgToOthers = "Jogador '" + senderPlayer.Name + "' deu de cara na porta trancada ao " + stDirection + "."; 
+						TellEverybodyElseInThisRoom(roomIn, senderPlayer, stMsgToOthers);							
+						
 					} 
 					else {
 						
@@ -439,6 +417,14 @@ public class mud_regras : MonoBehaviour
 								senderPlayer.GetComponent<MudCPlayer>().SetRoom(novaSala);
 								// Executa o 'Examinar' obrigatório
 								stReturnMsg += novaSala.Examinar(senderPlayer);
+								
+								// Avisa os outros jogadores que jogador moveu-se...
+								string stMsgToOthers = "Jogador '" + senderPlayer.Name + "' moveu-se para " + stDirection + "."; 
+								TellEverybodyElseInThisRoom(roomIn, senderPlayer, stMsgToOthers);			
+								
+								// ... e avisa ao jogadores da nova sala que o jogador entrou
+								stMsgToOthers = "Jogador '" + senderPlayer.Name + "' acabou de entrar na sala vindo do " + ReverseDirectionString(stDirection) + ".";
+								TellEverybodyElseInThisRoom(novaSala, senderPlayer, stMsgToOthers);			
 							}
 							
 						}
@@ -515,6 +501,10 @@ public class mud_regras : MonoBehaviour
 							roomIn.ObjectsIn.Remove(objeto);
 							// e cai fora do laco!
 							stReturnMsg += "Objeto '" + objeto.Name + "' adicionado ao seu inventario. ";
+							
+							// Avisa o restante dos jogadores
+							string stMsgToOthers = "Jogador '" + senderPlayer.Name + "' pegou o objeto '" + objeto.Name + "' desta sala."; 
+							TellEverybodyElseInThisRoom(roomIn, senderPlayer, stMsgToOthers);							
 							break;
 						}
 						else {
@@ -587,6 +577,10 @@ public class mud_regras : MonoBehaviour
 						senderPlayer.ObjectsIn.Remove(objeto);
 						bnDropped = true; // Indica que largamos o objeto
 						stReturnMsg += "Objeto '" + objeto.Name + "' largado na sala.";
+						
+						// Avisa o restante dos jogadores
+						string stMsgToOthers = "Jogador '" + senderPlayer.Name + "' largou o objeto '" + objeto.Name + "' nesta sala."; 
+						TellEverybodyElseInThisRoom(roomIn, senderPlayer, stMsgToOthers);
 						break;
 					}
 				}
@@ -689,19 +683,17 @@ public class mud_regras : MonoBehaviour
 	private string ProcessaFalar(MessageMud mudMsg, MudCRoom roomIn, MudCPlayer senderPlayer)
 	{
 	
-		// TODO: implementar!
-		
 		string stReturnMsg = "";
 		
 		if(mudMsg.nParam == 1) {
 			// Somente o comando
-		}
-		else if(mudMsg.nParam == 2) {
-			// Comando e 1 parâmetro
+			stReturnMsg += "Faltou a mensagem a ser enviada para os outros jogadores...";
 		}
 		else {
-			// Comando e vários parâmetros
 			
+			string stMsg = senderPlayer.name + " diz: " + mudMsg.stParam1 + " " + mudMsg.stParam2;
+			TellEverybodyElseInThisRoom(roomIn, senderPlayer, stMsg);
+			stReturnMsg = "Mensagem '" + stMsg + "' enviada para os outros jogadores desta sala.";
 		}
 		
 		return stReturnMsg;
@@ -805,6 +797,32 @@ public class mud_regras : MonoBehaviour
 		// Direcão inválida
 		return "None";
 	}
+	
+	/// <summary>
+	/// Informa a direção contrário à direção de stDir. Útil para avisar quando um jogador sai de uma sala e entra em outra 
+	/// </summary>
+	/// <param name="stDir">
+	/// String com uma direção <see cref="System.String"/>
+	/// </param>
+	/// <returns>
+	/// A direção contrária da string passada <see cref="System.String"/>
+	/// </returns>
+	private string ReverseDirectionString(string stDir) {
+		
+		if(stDir == "Norte")
+			return "Sul";
+		
+		if(stDir == "Sul")
+			return "Norte";
+		
+		if(stDir == "Oeste")
+			return "Leste";
+		
+		if(stDir == "Leste")
+			return "Oeste";
+		
+		return "None";
+	}
 
 	/***********************************************************************************************************/
 	/*
@@ -837,8 +855,6 @@ public class mud_regras : MonoBehaviour
 		return null;
 	}
 
-
-
 	/// <summary>
 	/// Retorna a lista de jogadores em determinada sala, com a excecão do próprio player
 	/// </summary>
@@ -861,14 +877,42 @@ public class mud_regras : MonoBehaviour
 			if(player.GetComponent<MudCPlayer>().roomIn == room) {
 				
 				if(player.GetComponent<MudCPlayer>() != playerMe) {
+
 					playersInRoom.Add(player.GetComponent<MudCPlayer>());
-					Debug.Log("Adicionando: " + playersInRoom.Count);
 				}
 			}
 		}
 		
 		return playersInRoom;
 	}
+
+	/// <summary>
+	/// Envia uma mensagem para todos os jogadores que estão em determinada sala. Serve
+	/// para avisar aos outros jogadores das ações de determinado jogador
+	/// </summary>
+	/// <param name="room">
+	/// A sala atual <see cref="MudCRoom"/>
+	/// </param>
+	/// <param name="playerMe">
+	/// Jogador (que obviamente não deve receber a própria mensagem) <see cref="MudCPlayer"/>
+	/// </param>
+	/// <param name="stMsg">
+	/// Mensagem a ser enviada para todos os jogadores <see cref="System.String"/>
+	/// </param>
+	public void TellEverybodyElseInThisRoom(MudCRoom room, MudCPlayer playerMe, string stMsg) {
 	
-	
+		List<MudCPlayer> playersInRoom = new List<MudCPlayer>();
+		
+		playersInRoom = PlayersInARoomExceptMe(room, playerMe);
+		
+		if(playersInRoom.Count != 0) {
+			
+			foreach(MudCPlayer player in playersInRoom) {
+				
+				scriptServer.SendChatMessageTo(player.GetNetworkPlayer(), stMsg);
+			}
+		}
+		
+	}
+
 }

@@ -4,7 +4,7 @@ using System.Collections;
 public class MudCPlayer : MudCGenericGameObject {
 
 	// Variáveis da classe
-	public NetworkPlayer networkPlayer;
+	private NetworkPlayer networkPlayer;
 	public MudCRoom roomIn; // Em qual sala estou?
 	
 	// Use this for initializationGame
@@ -25,6 +25,11 @@ public class MudCPlayer : MudCGenericGameObject {
 	public void SetNetworkPlayer(NetworkPlayer networkPlayer) {
 		
 		this.networkPlayer = networkPlayer;	
+	}
+	
+	public NetworkPlayer GetNetworkPlayer() {
+		
+		return this.networkPlayer;
 	}
 		
 }

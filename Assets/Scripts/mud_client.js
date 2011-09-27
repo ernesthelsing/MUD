@@ -194,8 +194,10 @@ function ApplyGlobalChatText (timeStamp : String, name : String, msg : String)
 
 	chatEntries.Add(entry);
 	
+	//FIXME: há um erro aqui: estamos removendo as entradas do chat pelo seu número, mas uma entrada pode
+	//ocupar mais de uma linha. O ideal é remover as entradas conforme o número de linhas utilizadas
 	//Remove old entries
-	if (chatEntries.Count > 4){
+	if (chatEntries.Count > 40){
 		chatEntries.RemoveAt(0);
 	}
 
