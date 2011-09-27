@@ -87,10 +87,24 @@ public class MudServer : MonoBehaviour
 	private void OnPlayerDisconnected (NetworkPlayer npPlayer)
 	{
 		
+		string stDisconnectMsg = "";
+		
 		addGameChatMessage ("Jogador desconectado: " + npPlayer.ipAddress + ":" + npPlayer.port);
 		
+		// Acha o player que desconectou
+		PlayerNode nodeDisconnected = GetPlayerNode(npPlayer);
+		MudCPlayer playerDisconnected = GameObject.Find(nodeDisconnected.stPlayerName).GetComponent<MudCPlayer>();
+		
+		// Larga todos os objetos do player na sala
+		scriptRegras.PlayerDropAllItens(playerDisconnected);
+		
+		// 3 - avisar a todos que estão na sala -> player, sala
+		stDisconnectMsg = "Jogador '" + playerDisconnected.Name + "' desconectou-se.";
+		scriptRegras.TellEverybodyElseInThisRoom(playerDisconnected.roomIn, playerDisconnected, stDisconnectMsg);
+
 		// Remove o player da lista do servidor
-		playerList.Remove (GetPlayerNode (npPlayer));
+		playerList.Remove(GetPlayerNode(npPlayer));
+		scriptRegras.RemovePlayerFromListAndKillIt(playerDisconnected);
 	}
 
 	/// <summary>

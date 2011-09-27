@@ -31,5 +31,5 @@ public class MudCPlayer : MudCGenericGameObject {
 		
 		return this.networkPlayer;
 	}
-		
+	
 }

@@ -552,12 +552,6 @@ public class mud_regras : MonoBehaviour
 		
 		else {
 		
-			// TODO:
-			// 1 - Verificar se o jogador possui algum objeto
-			// 2 - Verificar se o objeto que ele deseja largar esta em seu inventario
-			// 3 - Retirar o objeto do inventario
-			// 4 - Adicionar o objeto aos objetos da sala
-			// 5 - Avisar a todos os jogadores desta acão
 			if(senderPlayer.ObjectsIn.Count != 0 ) {
 				
 				// Ok, o nome do objeto pode ser algo tipo 'meu nome'. Quando processado pelo MUD,
@@ -600,7 +594,7 @@ public class mud_regras : MonoBehaviour
 		return stReturnMsg;
 	}
 
-/// <summary>
+	/// <summary>
 	/// Processa o comando para verificar o inventario do jogador
 	/// </summary>
 	/// <param name="mudMsg">
@@ -635,7 +629,7 @@ public class mud_regras : MonoBehaviour
 		return stReturnMsg;
 	}
 
-/// <summary>
+	/// <summary>
 	/// Processa o comando usar
 	/// </summary>
 	/// <param name="mudMsg">
@@ -668,7 +662,7 @@ public class mud_regras : MonoBehaviour
 		return stReturnMsg;
 	}
 		
-/// <summary>
+	/// <summary>
 	/// Processa o comando falar
 	/// </summary>
 	/// <param name="mudMsg">
@@ -699,7 +693,7 @@ public class mud_regras : MonoBehaviour
 		return stReturnMsg;
 	}
 		
-/// <summary>
+	/// <summary>
 	/// Processa o comando cochichar
 	/// </summary>
 	/// <param name="mudMsg">
@@ -732,7 +726,7 @@ public class mud_regras : MonoBehaviour
 		return stReturnMsg;
 	}
 
-/// <summary>
+	/// <summary>
 	/// Processa o comando ajuda
 	/// </summary>
 	/// <param name="mudMsg">
@@ -915,4 +909,47 @@ public class mud_regras : MonoBehaviour
 		
 	}
 
+	/// <summary>
+	/// Faz com que o player largue todos os seus objetos na sala. Útil quando este player
+	/// desconecta
+	/// </summary>
+	/// <param name="roomIn">
+	/// Sala em que o player está <see cref="MudCRoom"/>
+	/// </param>
+	public void PlayerDropAllItens(MudCPlayer playerMe) {
+
+		string stMsgToOthers = "";
+		MudCRoom roomIn = playerMe.roomIn;
+		MudCGenericGameObject objeto;
+		
+		if(playerMe.ObjectsIn.Count != 0) {
+			
+			int nIdx = 0;
+			for(nIdx = 0;  nIdx < playerMe.ObjectsIn.Count; nIdx++) {
+				
+				objeto = playerMe.ObjectsIn[nIdx];
+				roomIn.ObjectsIn.Add(objeto);
+				playerMe.ObjectsIn.Remove(objeto);
+				
+				stMsgToOthers = "Jogador '" + playerMe.Name + "' largou o objeto '" + objeto.Name + "' nesta sala.\n"; 
+			}
+			// Avisa todos
+			TellEverybodyElseInThisRoom(roomIn, playerMe, stMsgToOthers);
+		}
+	}
+		
+	public void RemovePlayerFromListAndKillIt(MudCPlayer playerDisconnected) {
+		
+		// Encontra o player na lista
+		foreach(GameObject player in listPlayers) {
+			
+			if(player.GetComponent<MudCPlayer>() == playerDisconnected) {
+				
+				listPlayers.Remove(player);
+				Destroy(player);
+				break;
+			}
+		}
+	}
+	
 }
