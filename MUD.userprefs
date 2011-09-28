@@ -2,9 +2,10 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\MudServer.cs">
     <Files>
-      <File FileName="Assets\Scripts\MudServer.cs" Line="106" Column="46" />
-      <File FileName="Assets\Scripts\mud_regras.cs" Line="953" Column="3" />
+      <File FileName="Assets\Scripts\mud_regras.cs" Line="351" Column="54" />
+      <File FileName="Assets\Scripts\MudServer.cs" Line="248" Column="3" />
       <File FileName="Assets\Scripts\MudCPlayer.cs" Line="35" Column="1" />
+      <File FileName="Assets\Scripts\MudCRoom.cs" Line="95" Column="115" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">

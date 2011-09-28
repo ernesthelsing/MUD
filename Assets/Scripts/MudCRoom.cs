@@ -53,64 +53,59 @@ public class MudCRoom : MudCGenericGameObject {
 	/// </returns>
 	public string CheckDoors() {
 	
-		int nCount = 0;
-		string stAux = "Esta sala tem ";
-		string stDoors = "";
+		string stReturnMsg = "";
 		
 		if(doorN) {
-			
-			nCount++;
-			stDoors += "ao norte";
+			stReturnMsg += "Ao norte, esta sala tem uma porta " + doorN.Description + "(" + doorN.Name +"). Esta porta esta' ";
+			if(doorN.Locked) {
+
+				stReturnMsg += "trancada. ";
+			}
+			else {
+				
+				stReturnMsg += "destrancada. ";
+			}
+		}
+
+		if(doorS) {
+			stReturnMsg += "Ao sul, esta sala tem uma porta " + doorS.Description + "(" + doorS.Name +"). Esta porta esta' ";
+			if(doorS.Locked) {
+
+				stReturnMsg += "trancada. ";
+			}
+			else {
+				
+				stReturnMsg += "destrancada. ";
+			}
 		}
 		
 		if(doorE) {
-			
-			if(nCount != 0) {
-				// Já temos a descricão de uma porta. Então colocamos uma vírgula e a próxima descricão
-				stDoors += ", ";
+			stReturnMsg += "A leste, esta sala tem uma porta " + doorE.Description + "(" + doorE.Name +"). Esta porta esta' ";
+			if(doorE.Locked) {
+
+				stReturnMsg += "trancada. ";
 			}
-			nCount++;
-			stDoors +="ao leste";
+			else {
+				
+				stReturnMsg += "destrancada. ";
+			}
 		}
-		
+
 		if(doorO) {
-			
-			if(nCount != 0) {
-				// Já temos a descricão de uma porta. Então colocamos uma vírgula e a próxima descricão
-				stDoors += ", ";
+			stReturnMsg += "A oeste, esta sala tem uma porta " + doorO.Description + "(" + doorO.Name +"). Esta porta esta' ";
+			if(doorO.Locked) {
+
+				stReturnMsg += "trancada. ";
 			}
-			nCount++;
-			stDoors +="a oeste";
-		}
-		
-		if(doorS) {
-			
-			if(nCount != 0) {
-				// Já temos a descricão de uma porta. Então colocamos uma vírgula e a próxima descricão. Como sul
-				// é a última, colocamos o 'e' também
-				stDoors += ", e ";
+			else {
+				
+				stReturnMsg += "destrancada. ";
 			}
-			nCount++;
-			stDoors +="ao sul";
 		}
-		
-		// Colocamos o ponto final
-		stDoors += ".";
-		
-		// Acertos finais na frase...
-		if(nCount == 1) {
-		
-			// Somente uma porta na sala
-			stAux += "uma porta ";
-		}
-		else {
-		
-			// Mais de uma porta na sala
-			stAux += "portas ";
-		}
+
 		
 		// Ok, montamos a frase completa
-		return stAux + stDoors + " ";
+		return stReturnMsg;
 	}
 	
 	/// <summary>
