@@ -1,9 +1,9 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\MudServer.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\mud_regras.cs">
     <Files>
-      <File FileName="Assets\Scripts\MudServer.cs" Line="106" Column="46" />
-      <File FileName="Assets\Scripts\mud_regras.cs" Line="953" Column="3" />
+      <File FileName="Assets\Scripts\mud_regras.cs" Line="125" Column="34" />
+      <File FileName="Assets\Scripts\MudServer.cs" Line="171" Column="50" />
       <File FileName="Assets\Scripts\MudCPlayer.cs" Line="35" Column="1" />
     </Files>
     <Pads>
@@ -12,7 +12,7 @@
           <Node name="Assembly-CSharp" expanded="True">
             <Node name="Assets" expanded="True">
               <Node name="Scripts" expanded="True">
-                <Node name="MudServer.cs" selected="True" />
+                <Node name="mud_regras.cs" selected="True" />
               </Node>
             </Node>
           </Node>
