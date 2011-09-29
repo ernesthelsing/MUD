@@ -650,12 +650,78 @@ public class mud_regras : MonoBehaviour
 		
 		if(mudMsg.nParam == 1) {
 			// Somente o comando
-		}
-		else if(mudMsg.nParam == 2) {
-			// Comando e 1 parâmetro
+			stReturnMsg += "O que voce deseja utilizar?";
 		}
 		else {
-			// Comando e vários parâmetros
+			// Comando e 1 parâmetro
+			
+			if(senderPlayer.ObjectsIn.Count != 0 ) {
+
+				// Ok, o nome do objeto pode ser algo tipo 'meu nome'. Quando processado pelo MUD,
+				// as 2 palavras que compõem o nome ficam separadas. Aqui nós juntamos elas novamente.
+				string stObjectNameInMudMsg = mudMsg.stParam1;
+				// Limpa qualquer espaco que tenha sobrado
+				stObjectNameInMudMsg = stObjectNameInMudMsg.Replace(" ","");
+				// Converte para lower case para facilitar a digitacão
+				stObjectNameInMudMsg = stObjectNameInMudMsg.ToLower();
+
+				foreach(MudCGenericGameObject objeto in senderPlayer.ObjectsIn) {
+
+					Debug.Log("PROCESSAUSAR| Comparando '" + objeto.name.ToLower() + "' com '" + stObjectNameInMudMsg + "'");
+					if(objeto.name.ToLower() == stObjectNameInMudMsg) {
+
+            if(stObjectNameInMudMsg == "chaveazul"){
+              //testa se usou a chave
+              bool usou = false;
+              mudMsg.stParam2 = mudMsg.stParam2.Replace(" ","");
+              string stDirection = ProcessDirectionString(mudMsg.stParam2);
+              Debug.Log("Direcao: " + stDirection + " Deveria ser: "+ mudMsg.stParam2);
+              if(stDirection != "None"){
+                //verifica se ha uma porta para usar a chave na direção passada
+                MudCDoor door = WhatIsInThisDirection(roomIn, stDirection);
+                if(door != null) {
+                  string chaveDaPorta = "nada";
+                  //se existe chave na porta pega o nome
+                  if(door.GetComponent<MudCDoor>().objOpener){
+                    chaveDaPorta = door.GetComponent<MudCDoor>().objOpener.name;
+                    chaveDaPorta = chaveDaPorta.Replace(" ","");
+                    chaveDaPorta = chaveDaPorta.ToLower();
+                  }
+                  Debug.Log("Chave desta Porta: "+chaveDaPorta);
+                  //testa se a chave é dessa porta
+                  if(chaveDaPorta == stObjectNameInMudMsg){
+                    if(door.GetComponent<MudCDoor>().Locked) {
+                      door.GetComponent<MudCDoor>().Locked = false;
+                      stReturnMsg += "A porta foi destrancada";
+                      usou = true;
+                    }else{
+                      door.GetComponent<MudCDoor>().Locked = true;
+                      stReturnMsg += "A porta foi trancada";
+                      usou = true;
+                    }
+                  }else{
+                    stReturnMsg += "Esta chave nao eh desta porta.";
+                  }
+              }else{
+                stReturnMsg += "Nao ha uma porta nesta direcao.";
+              }
+              }else{
+                stReturnMsg += "Direcao invalida.";
+              }
+              // Avisa o restante dos jogadores
+              if(usou){
+  						  string stMsgToOthers = "Jogador '" + senderPlayer.Name + "' usou o objeto '" + objeto.Name + "' nesta sala.";
+  						  TellEverybodyElseInThisRoom(roomIn, senderPlayer, stMsgToOthers);
+              }
+  						break;
+            }
+					}else{
+            stReturnMsg += "Voce nao tem este objeto. "+
+                           "Verifique se voce digitou corretamente e se voce tem este objeto em seu inventario.";
+					}
+				}
+			}
+			
 			
 		}
 		
@@ -767,9 +833,9 @@ public class mud_regras : MonoBehaviour
 	{
 		
 		stDir = stDir.ToLower();
-		
+		Debug.Log("Funcao direcao: "+stDir);
 		if(stDir == "n" || stDir == "norte") {
-			
+			Debug.Log("if norte");
 			return "Norte";
 		}
 		
