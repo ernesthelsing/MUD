@@ -105,7 +105,7 @@ function OnGUI() {
 			
 		}
 		
-		if (GUILayout.Button ("Desconectar")) {
+		if (GUILayout.Button ("Desconectar " + playerName)) {
 			
 				Network.Disconnect (200);
 		}
