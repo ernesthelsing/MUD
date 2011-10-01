@@ -1,9 +1,9 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{7544C944-31E4-F8F2-4B95-F024E3EFDE43}"
+
+Project("{B442C9FC-6938-30ED-8351-6517512AED73}") = "MUD", "Assembly-CSharp.csproj", "{7544C944-31E4-F8F2-4B95-F024E3EFDE43}"
 EndProject
-Project("{b955b5aa-9c1c-4cd6-9a10-9e34431be3eb}") = "Assembly-UnityScript", "Assembly-UnityScript.unityproj", "{B05CAB7C-4389-A6C0-8D27-3679E075BA45}"
+Project("{B442C9FC-6938-30ED-8351-6517512AED73}") = "MUD", "Assembly-UnityScript.unityproj", "{B05CAB7C-4389-A6C0-8D27-3679E075BA45}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,7 +20,10 @@ Global
 		{B05CAB7C-4389-A6C0-8D27-3679E075BA45}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B05CAB7C-4389-A6C0-8D27-3679E075BA45}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
-	GlobalSection(MonoDevelopProperties) = preSolution
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+		GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Assembly-CSharp.csproj
 		Policies = $0
 		$0.TextStylePolicy = $1
@@ -56,7 +59,5 @@ Global
 		$5.Text = 
 		$5.inheritsSet = Apache2License
 	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
-	EndGlobalSection
+
 EndGlobal

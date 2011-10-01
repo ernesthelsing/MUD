@@ -356,15 +356,67 @@ public class mud_regras : MonoBehaviour
 			// 1 - Procurar o objeto. Se for uma direcão, examinar as portas. Se for um objeto, verificar se ele está na
 			// sala ou no inventario do proprio jogador
 			// 2 - Se o objeto existir, retornar sua descricão
-			string stDirection = ProcessDirectionString(mudMsg.stParam2);
+
+			string stDirection = ProcessDirectionString(mudMsg.stParam1);
+			
 			if(stDirection != "None") {
 				
 				// Opa, o player quer examinar uma direcão
-				if(stDirection == "Norte" && roomIn.doorN != null) {
+				if(stDirection == "Norte") {
 					
-					// TODO: finalizar aqui!
-					stReturnMsg += "";
+					if(roomIn.doorN != null) {
+						
+						return "Ao " + stDirection + ", " + roomIn.doorN.GetNiceDescription();
+					}
+					else {
+						
+						return "Nao ha' nada nesta direcao.";
+					}
 				}
+
+				if(stDirection == "Sul") {
+					
+					if(roomIn.doorS != null) {
+						
+						return "Ao " + stDirection + ", " + roomIn.doorS.GetNiceDescription();
+					}
+					else {
+						
+						return "Nao ha' nada nesta direcao.";
+					}
+				}
+				
+				if(stDirection == "Oeste") {
+					
+					if(roomIn.doorO != null) {
+						
+						return "A " + stDirection + ", " + roomIn.doorO.GetNiceDescription();
+					}
+					else {
+						
+						return "Nao ha' nada nesta direcao.";
+					}
+				}
+
+				if(stDirection == "Leste") {
+					
+					if(roomIn.doorE != null) {
+						
+						return "A " + stDirection + ", " + roomIn.doorE.GetNiceDescription();
+					}
+					else {
+						
+						return "Nao ha' nada nesta direcao.";
+					}
+				}
+			}
+			else {
+				// TODO
+				// Ok, nao foi passada uma direcao... entao pode ser que o jogador queira examinar um item na sala,
+				// no seu inventario ou entao outro jogador
+				
+				// Examinar um item na sala
+				
 			}
 			
     }

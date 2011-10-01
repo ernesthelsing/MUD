@@ -28,10 +28,10 @@ public class MudCDoor : MudCGenericGameObject {
     
     string stReturnMsg = "";
 		
-    stReturnMsg += Description + " ";
+    stReturnMsg += Description;
 		
 		if(Name != "") {
-			stReturnMsg += "(" + Name +")";	
+			stReturnMsg += " (" + Name +")";	
 		}
 		
 		stReturnMsg += ". Esta porta esta' ";
