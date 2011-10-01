@@ -350,13 +350,24 @@ public class mud_regras : MonoBehaviour
 			// Obtém a descricão da sala
 			stReturnMsg += roomIn.GetComponent<MudCRoom>().Examinar(senderPlayer);
 		}
-		
-		// TODO:
-		// Implementar examinar para um objeto qualquer (nParam = 2)
-		
-		// Implementar examinar com erro (objeto inexiste, número de parâmetros inválidos, etc);
-		
-		
+		else {
+			
+      // Examina um objeto, pode ser um item, uma porta
+			// 1 - Procurar o objeto. Se for uma direcão, examinar as portas. Se for um objeto, verificar se ele está na
+			// sala ou no inventario do proprio jogador
+			// 2 - Se o objeto existir, retornar sua descricão
+			string stDirection = ProcessDirectionString(mudMsg.stParam2);
+			if(stDirection != "None") {
+				
+				// Opa, o player quer examinar uma direcão
+				if(stDirection == "Norte" && roomIn.doorN != null) {
+					
+					// TODO: finalizar aqui!
+					stReturnMsg += "";
+				}
+			}
+			
+    }
 		
 		return stReturnMsg;
 	}
@@ -855,9 +866,9 @@ public class mud_regras : MonoBehaviour
 	{
 		
 		stDir = stDir.ToLower();
-		Debug.Log("Funcao direcao: "+stDir);
+	
 		if(stDir == "n" || stDir == "norte") {
-			Debug.Log("if norte");
+		
 			return "Norte";
 		}
 		

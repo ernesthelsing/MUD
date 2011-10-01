@@ -17,5 +17,35 @@ public class MudCDoor : MudCGenericGameObject {
 		Type = eObjectType.Door;
 		Pickable = false;
 	}
+  
+  /// <summary>
+  /// Retorna frase com a descricão da porta. Útil para os comandos de examinar
+  /// </summary>
+  /// <returns>
+  /// A <see cref="System.String"/>
+  /// </returns>
+  public string GetNiceDescription() {
+    
+    string stReturnMsg = "";
+		
+    stReturnMsg += Description + " ";
+		
+		if(Name != "") {
+			stReturnMsg += "(" + Name +")";	
+		}
+		
+		stReturnMsg += ". Esta porta esta' ";
+
+		if(Locked) {
+
+      stReturnMsg += "trancada. ";
+    }
+    else {
+        
+			stReturnMsg += "destrancada. ";
+    }
+		
+		return stReturnMsg;
+  }
 
 }

@@ -1,21 +1,20 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\mud_regras.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\MudCDoor.cs">
     <Files>
-      <File FileName="Assets\Scripts\mud_client.js" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\mud_regras.cs" Line="808" Column="78" />
+      <File FileName="Assets\Scripts\mud_regras.cs" Line="365" Column="30" />
       <File FileName="Assets\Scripts\MudServer.cs" Line="171" Column="50" />
-      <File FileName="Assets\Scripts\MudCPlayer.cs" Line="11" Column="17" />
-      <File FileName="Assets\Scripts\MudCRoom.cs" Line="12" Column="22" />
-      <File FileName="Assets\Scripts\MudCGenericGameObject.cs" Line="20" Column="46" />
-      <File FileName="Assets\Scripts\MudCDoor.cs" Line="12" Column="2" />
+      <File FileName="Assets\Scripts\MudCRoom.cs" Line="70" Column="4" />
+      <File FileName="Assets\Scripts\MudCDoor.cs" Line="34" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
-        <State expanded="True" selected="True">
+        <State expanded="True">
           <Node name="Assembly-CSharp" expanded="True">
             <Node name="Assets" expanded="True">
-              <Node name="Scripts" expanded="True" />
+              <Node name="Scripts" expanded="True">
+                <Node name="MudCDoor.cs" selected="True" />
+              </Node>
             </Node>
           </Node>
           <Node name="Assembly-UnityScript" expanded="True">

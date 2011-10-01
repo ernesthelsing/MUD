@@ -54,55 +54,29 @@ public class MudCRoom : MudCGenericGameObject {
 	public string CheckDoors() {
 	
 		string stReturnMsg = "";
-		
+	
 		if(doorN) {
-			stReturnMsg += "Ao norte, esta sala tem uma porta " + doorN.Description + "(" + doorN.Name +"). Esta porta esta' ";
-			if(doorN.Locked) {
-
-				stReturnMsg += "trancada. ";
-			}
-			else {
-				
-				stReturnMsg += "destrancada. ";
-			}
+			
+			stReturnMsg += "Ao norte, esta sala tem ";
+			stReturnMsg += doorN.GetNiceDescription();
 		}
 
 		if(doorS) {
-			stReturnMsg += "Ao sul, esta sala tem uma porta " + doorS.Description + "(" + doorS.Name +"). Esta porta esta' ";
-			if(doorS.Locked) {
-
-				stReturnMsg += "trancada. ";
-			}
-			else {
-				
-				stReturnMsg += "destrancada. ";
-			}
+			
+			stReturnMsg += "Ao sul, esta sala tem ";
+			stReturnMsg += doorS.GetNiceDescription();
 		}
 		
 		if(doorE) {
-			stReturnMsg += "A leste, esta sala tem uma porta " + doorE.Description + "(" + doorE.Name +"). Esta porta esta' ";
-			if(doorE.Locked) {
 
-				stReturnMsg += "trancada. ";
-			}
-			else {
-				
-				stReturnMsg += "destrancada. ";
-			}
+			stReturnMsg += "A leste, esta sala tem ";
+			stReturnMsg += doorE.GetNiceDescription();
 		}
 
 		if(doorO) {
-			stReturnMsg += "A oeste, esta sala tem uma porta " + doorO.Description + "(" + doorO.Name +"). Esta porta esta' ";
-			if(doorO.Locked) {
-
-				stReturnMsg += "trancada. ";
-			}
-			else {
-				
-				stReturnMsg += "destrancada. ";
-			}
+			stReturnMsg += "A oeste, esta sala tem ";
+			stReturnMsg += doorO.GetNiceDescription();
 		}
-
 		
 		// Ok, montamos a frase completa
 		return stReturnMsg;
