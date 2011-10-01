@@ -664,16 +664,15 @@ public class mud_regras : MonoBehaviour
 				stObjectNameInMudMsg = stObjectNameInMudMsg.Replace(" ","");
 				// Converte para lower case para facilitar a digitacão
 				stObjectNameInMudMsg = stObjectNameInMudMsg.ToLower();
+        bool usou = false;
+        mudMsg.stParam2 = mudMsg.stParam2.Replace(" ","");
+        mudMsg.stParam2 = mudMsg.stParam2.ToLower();
 
 				foreach(MudCGenericGameObject objeto in senderPlayer.ObjectsIn) {
-
 					Debug.Log("PROCESSAUSAR| Comparando '" + objeto.name.ToLower() + "' com '" + stObjectNameInMudMsg + "'");
 					if(objeto.name.ToLower() == stObjectNameInMudMsg) {
-
-            if(stObjectNameInMudMsg == "chaveazul"){
+            if(stObjectNameInMudMsg.IndexOf("chave")==0){
               //testa se usou a chave
-              bool usou = false;
-              mudMsg.stParam2 = mudMsg.stParam2.Replace(" ","");
               string stDirection = ProcessDirectionString(mudMsg.stParam2);
               Debug.Log("Direcao: " + stDirection + " Deveria ser: "+ mudMsg.stParam2);
               if(stDirection != "None"){
@@ -714,6 +713,25 @@ public class mud_regras : MonoBehaviour
   						  TellEverybodyElseInThisRoom(roomIn, senderPlayer, stMsgToOthers);
               }
   						break;
+            }else if(stObjectNameInMudMsg.IndexOf("porrete")==0){
+              foreach(MudCPlayer playerPorrete in PlayersInARoomExceptMe(roomIn, senderPlayer)){
+                if(playerPorrete.name.ToLower() == mudMsg.stParam2){
+                  string stMsgToOthers;
+                  if(Random.Range(0, 5) == 1){
+                    MudCGenericGameObject objetoPlayerPorrete;
+                    objetoPlayerPorrete = playerPorrete.ObjectsIn[Random.Range(0,playerPorrete.ObjectsIn.Count)];
+                    stReturnMsg += stMsgToOthers = "O :"+playerPorrete.name+" levou uma porretada do "+senderPlayer.name+
+                                   " e dropou o item "+objetoPlayerPorrete.name+" de seu inventario.";
+                    roomIn.ObjectsIn.Add(objetoPlayerPorrete);
+                    playerPorrete.ObjectsIn.Remove(objetoPlayerPorrete);
+
+                  }else{
+                    stReturnMsg += stMsgToOthers = senderPlayer.name+" bateu no "+playerPorrete.name;
+                    TellEverybodyElseInThisRoom(roomIn, senderPlayer, stMsgToOthers);
+                  }
+                }
+              }
+
             }
 					}else{
             stReturnMsg += "Voce nao tem este objeto. "+
@@ -779,14 +797,18 @@ public class mud_regras : MonoBehaviour
 		string stReturnMsg = "";
 		
 		if(mudMsg.nParam == 1) {
-			// Somente o comando
-		}
-		else if(mudMsg.nParam == 2) {
-			// Comando e 1 parâmetro
+      stReturnMsg += "Parametros invalidos.";
 		}
 		else {
-			// Comando e vários parâmetros
-			
+      MudCPlayer player;
+      if(GameObject.Find(mudMsg.stParam1)){
+        stReturnMsg += "(To)"+mudMsg.stParam1+":"+mudMsg.stParam2;
+        player = GameObject.Find(mudMsg.stParam1).GetComponent<MudCPlayer>();
+        string msgCochichar = senderPlayer.name+":"+mudMsg.stParam2;
+  			scriptServer.SendChatMessageTo(player.GetNetworkPlayer(), msgCochichar);
+      }else{
+        stReturnMsg += "Jogador nao Existe.";
+      }
 		}
 		
 		return stReturnMsg;
