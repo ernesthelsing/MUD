@@ -352,11 +352,6 @@ public class mud_regras : MonoBehaviour
 		}
 		else {
 			
-      // Examina um objeto, pode ser um item, uma porta
-			// 1 - Procurar o objeto. Se for uma direcão, examinar as portas. Se for um objeto, verificar se ele está na
-			// sala ou no inventario do proprio jogador
-			// 2 - Se o objeto existir, retornar sua descricão
-
 			string stDirection = ProcessDirectionString(mudMsg.stParam1);
 			
 			if(stDirection != "None") {
@@ -411,14 +406,43 @@ public class mud_regras : MonoBehaviour
 				}
 			}
 			else {
-				// TODO
+				
 				// Ok, nao foi passada uma direcao... entao pode ser que o jogador queira examinar um item na sala,
 				// no seu inventario ou entao outro jogador
 				
-				// Examinar um item na sala
+				// Verifica no meu inventario
+				MudCGenericGameObject objetoExam;
 				
+				// Primeiro procura no inventario do jogador
+				objetoExam = FindObjectByNameInMyInventory(senderPlayer, mudMsg.stParam1);
+				
+				if(objetoExam == null) {
+					// Objeto não encontrado no inventario do jogador. Vamos procurar na sala então
+					objetoExam = FindObjectByNameInRoom(roomIn, mudMsg.stParam1);
+				}
+
+				// Se achou algum objeto, retorna seu nome e descricão
+				if(objetoExam != null) {
+				
+					stReturnMsg += objetoExam.Name + ": " + objetoExam.Description + ".";
+					return stReturnMsg;
+				}
+				
+				// Nenhum objeto encontrado. Quem sabe o jogador está dando 'examinar' em outro jogador?
+				MudCPlayer playerInRoom;
+				
+				playerInRoom = FindPlayerByNameInRoom(roomIn, senderPlayer, mudMsg.stParam1);
+				
+				if(playerInRoom != null) {
+					
+					stReturnMsg += playerInRoom.Name + ": " + playerInRoom.Description + ".";
+					return stReturnMsg;
+				}
+				
+				
+				// Não achamos o objeto em lugar algum. Avisar ao jogador
+				stReturnMsg += "Nao e' possivel examinar '" + mudMsg.stParam1 + "'. Verifique.";
 			}
-			
     }
 		
 		return stReturnMsg;
@@ -1101,6 +1125,100 @@ public class mud_regras : MonoBehaviour
 				break;
 			}
 		}
+	}
+	
+	/// <summary>
+	/// Verifica o inventário de um jogador em busca do objeto de certo nome. Retorna o objeto caso encontrado,
+	/// null caso contrário
+	/// </summary>
+	/// <param name="playerMe">
+	/// A <see cref="MudCPlayer"/>
+	/// </param>
+	/// <param name="stObjectToSearch">
+	/// A <see cref="System.String"/>
+	/// </param>
+	/// <returns>
+	/// A <see cref="MudCGenericGameObject"/>
+	/// </returns>
+	public MudCGenericGameObject FindObjectByNameInMyInventory(MudCPlayer playerMe, string stObjectToSearch) {
+		
+		if(playerMe.ObjectsIn.Count != 0 ) {
+			
+			foreach(MudCGenericGameObject objeto in playerMe.ObjectsIn) {
+				
+				if(stObjectToSearch.ToLower() == objeto.Name.ToLower()) {
+					
+					return objeto;
+				}
+			}
+		}
+			
+		return null;
+	}
+	
+	/// <summary>
+	/// Busca por um objeto na sala pelo seu nome. Caso encontrado, retorna o objeto, senão retorna null 
+	/// </summary>
+	/// <param name="roomIn">
+	/// A <see cref="MudCRoom"/>
+	/// </param>
+	/// <param name="stObjectToSearch">
+	/// A <see cref="System.String"/>
+	/// </param>
+	/// <returns>
+	/// A <see cref="MudCGenericGameObject"/>
+	/// </returns>
+	public MudCGenericGameObject FindObjectByNameInRoom(MudCRoom roomIn, string stObjectToSearch) {
+		
+		if(roomIn.ObjectsIn.Count != 0 ) {
+			
+			foreach(MudCGenericGameObject objeto in roomIn.ObjectsIn) {
+				
+				if(stObjectToSearch.ToLower() == objeto.Name.ToLower()) {
+					
+					return objeto;
+				}
+			}
+		}
+			
+		return null;
+	}
+
+	/// <summary>
+	/// Procura por um jogador na sala pelo seu nome. Se encontrado, retorna o jogador, caso contrário
+	/// retorn null
+	/// </summary>
+	/// <param name="roomIn">
+	/// A <see cref="MudCRoom"/>
+	/// </param>
+	/// <param name="playerMe">
+	/// A <see cref="MudCPlayer"/>
+	/// </param>
+	/// <param name="stObjectToSearch">
+	/// A <see cref="System.String"/>
+	/// </param>
+	/// <returns>
+	/// A <see cref="MudCPlayer"/>
+	/// </returns>
+	public MudCPlayer FindPlayerByNameInRoom(MudCRoom roomIn, MudCPlayer playerMe, string stObjectToSearch) {
+		
+		List<MudCPlayer> playersInRoom = new List<MudCPlayer>();
+		
+		playersInRoom = PlayersInARoomExceptMe(roomIn, playerMe);
+		
+		if(playersInRoom.Count != 0) {
+			
+			foreach(MudCPlayer player in playersInRoom) {
+
+				if(player.Name.ToLower() == stObjectToSearch.ToLower()) {
+					
+					return player;
+				}
+					
+			}
+		}
+		
+		return null;
 	}
 	
 }
