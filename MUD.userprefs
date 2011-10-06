@@ -1,16 +1,15 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\mud_regras.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\mud_client.js">
     <Files>
-      <File FileName="Assets\Scripts\mud_regras.cs" Line="1006" Column="63" />
       <File FileName="Assets\Scripts\MudServer.cs" Line="134" Column="1" />
       <File FileName="Assets\Scripts\MudCRoom.cs" Line="44" Column="1" />
       <File FileName="Assets\Scripts\MudCDoor.cs" Line="35" Column="4" />
-      <File FileName="Assets\Scripts\mud_client.js" Line="117" Column="22" />
+      <File FileName="Assets\Scripts\mud_client.js" Line="108" Column="56" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
-        <State expanded="True" selected="True">
+        <State expanded="True">
           <Node name="Assembly-CSharp" expanded="True">
             <Node name="Assets" expanded="True">
               <Node name="Scripts" expanded="True" />
@@ -18,7 +17,9 @@
           </Node>
           <Node name="Assembly-UnityScript" expanded="True">
             <Node name="Assets" expanded="True">
-              <Node name="Scripts" expanded="True" />
+              <Node name="Scripts" expanded="True">
+                <Node name="mud_client.js" selected="True" />
+              </Node>
             </Node>
           </Node>
         </State>
