@@ -14,7 +14,8 @@ public class mud_regras : MonoBehaviour
 		usar,
 		falar,
 		cochichar,
-		ajuda
+		ajuda,
+    mapa
 	}
 
 	class MudCommands
@@ -314,6 +315,15 @@ public class mud_regras : MonoBehaviour
 			
 			stReturnMsg += ProcessaAjuda(mudMsg, roomIn, senderPlayer);
 		}
+
+    // Mapa
+    if(stVerboP == "mapa" || stVerboP == "m") {
+      
+      // Enviar mensagem com os comandos disponíveis
+      mudMsg.eVerb = MudVerbs.ajuda;
+      
+      stReturnMsg += ProcessaMapa(mudMsg, roomIn, senderPlayer);
+    }
 		
 		// Ok, agora devolve a mensagem para o player que enviou o comando
 		Debug.Log("Deveria estar mandando: " + stReturnMsg);
@@ -573,12 +583,13 @@ public class mud_regras : MonoBehaviour
 				stObjectNameInMudMsg = stObjectNameInMudMsg.Replace(" ","");
 				// Converte para lower case para facilitar a digitacão
 				stObjectNameInMudMsg = stObjectNameInMudMsg.ToLower();
-				
+        //bool que verifica se existe tal objeto
+				bool contem = false;
 				foreach(MudCGenericGameObject objeto in roomIn.ObjectsIn) {
 					
 					Debug.Log("PROCESSAPEGAR| Comparando '" + objeto.name.ToLower() + "' com '" + stObjectNameInMudMsg + "'");
 					if(objeto.name.ToLower() == stObjectNameInMudMsg) {
-						
+						contem = true;
 						// Ok, objeto encontrado! Verifica se realmente ele é um item e se é coletável
 						if(objeto.Pickable && objeto.Type == MudCGenericGameObject.eObjectType.Item) {
 							
@@ -600,6 +611,9 @@ public class mud_regras : MonoBehaviour
 						}
 					}
 				}
+        if(!contem){
+          stReturnMsg += "Nesta sala nao existe este item.";
+        }
 			}
 			else {
 				
@@ -738,8 +752,7 @@ public class mud_regras : MonoBehaviour
 		if(mudMsg.nParam == 1) {
 			// Somente o comando
 			stReturnMsg += "O que voce deseja utilizar?";
-		}
-		else {
+		}else {
 			// Comando e 1 parâmetro
 			
 			if(senderPlayer.ObjectsIn.Count != 0 ) {
@@ -752,12 +765,19 @@ public class mud_regras : MonoBehaviour
 				// Converte para lower case para facilitar a digitacão
 				stObjectNameInMudMsg = stObjectNameInMudMsg.ToLower();
         bool usou = false;
-        mudMsg.stParam2 = mudMsg.stParam2.Replace(" ","");
-        mudMsg.stParam2 = mudMsg.stParam2.ToLower();
-
+        //se nao contem objeto mostra mensagem
+        bool contem = false;
+        if(mudMsg.stParam2 != null){
+          mudMsg.stParam2 = mudMsg.stParam2.Replace(" ","");
+          mudMsg.stParam2 = mudMsg.stParam2.ToLower();
+        }else{
+          stReturnMsg += "Faltam parametros para a acao 'usar'. Para obter ajuda digite 'ajuda'.";
+          return stReturnMsg;
+        }
 				foreach(MudCGenericGameObject objeto in senderPlayer.ObjectsIn) {
 					Debug.Log("PROCESSAUSAR| Comparando '" + objeto.name.ToLower() + "' com '" + stObjectNameInMudMsg + "'");
 					if(objeto.name.ToLower() == stObjectNameInMudMsg) {
+            contem = true;
             if(stObjectNameInMudMsg.IndexOf("chave")==0){
               //testa se usou a chave
               string stDirection = ProcessDirectionString(mudMsg.stParam2);
@@ -801,31 +821,39 @@ public class mud_regras : MonoBehaviour
               }
   						break;
             }else if(stObjectNameInMudMsg.IndexOf("porrete")==0){
-              foreach(MudCPlayer playerPorrete in PlayersInARoomExceptMe(roomIn, senderPlayer)){
-                if(playerPorrete.name.ToLower() == mudMsg.stParam2){
-                  string stMsgToOthers;
-                  if(Random.Range(0, 5) == 1){
-                    MudCGenericGameObject objetoPlayerPorrete;
-                    objetoPlayerPorrete = playerPorrete.ObjectsIn[Random.Range(0,playerPorrete.ObjectsIn.Count)];
-                    stReturnMsg += stMsgToOthers = "O :"+playerPorrete.name+" levou uma porretada do "+senderPlayer.name+
-                                   " e dropou o item "+objetoPlayerPorrete.name+" de seu inventario.";
-                    roomIn.ObjectsIn.Add(objetoPlayerPorrete);
-                    playerPorrete.ObjectsIn.Remove(objetoPlayerPorrete);
-
+              if(PlayersInARoomExceptMe(roomIn, senderPlayer).Count >0){
+                foreach(MudCPlayer playerPorrete in PlayersInARoomExceptMe(roomIn, senderPlayer)){
+                  if(playerPorrete.name.ToLower() == mudMsg.stParam2){
+                    string stMsgToOthers;
+                    if(Random.Range(0, 5) == 1){
+                      MudCGenericGameObject objetoPlayerPorrete;
+                      objetoPlayerPorrete = playerPorrete.ObjectsIn[Random.Range(0,playerPorrete.ObjectsIn.Count)];
+                      stReturnMsg += stMsgToOthers = "O :"+playerPorrete.name+" levou uma porretada do "+senderPlayer.name+
+                                     " e dropou o item "+objetoPlayerPorrete.name+" de seu inventario.";
+                      roomIn.ObjectsIn.Add(objetoPlayerPorrete);
+                      playerPorrete.ObjectsIn.Remove(objetoPlayerPorrete);
+  
+                    }else{
+                      stReturnMsg += stMsgToOthers = senderPlayer.name+" bateu no "+playerPorrete.name;
+                      TellEverybodyElseInThisRoom(roomIn, senderPlayer, stMsgToOthers);
+                    }
                   }else{
-                    stReturnMsg += stMsgToOthers = senderPlayer.name+" bateu no "+playerPorrete.name;
-                    TellEverybodyElseInThisRoom(roomIn, senderPlayer, stMsgToOthers);
+                    stReturnMsg += "Jogador Inexistente.";
                   }
                 }
+              }else{
+                stReturnMsg += "Nesta sala nao ha jogadores.";
               }
-
+              break;
             }
-					}else{
-            stReturnMsg += "Voce nao tem este objeto. "+
-                           "Verifique se voce digitou corretamente e se voce tem este objeto em seu inventario.";
 					}
 				}
-			}
+        if(!contem){
+          stReturnMsg += "Item inexistente.";
+        }
+			}else{
+        stReturnMsg += "Seu inventorio esta vazio.";
+      }
 			
 			
 		}
@@ -933,6 +961,62 @@ public class mud_regras : MonoBehaviour
 		
 		return stReturnMsg;
 	}
+
+  /// <summary>
+  /// Processa o comando mapa
+  /// </summary>
+  /// <param name="mudMsg">
+  /// MudMsg com a mensagem enviada já quebrada em partes <see cref="MessageMud"/>
+  /// </param>
+  /// <param name="roomIn">
+  /// Objeto que representa a sala que o player está <see cref="MudCRoom"/>
+  /// </param>
+  /// <returns>
+  /// String com a descricao da execucao de examinar, ou texto com erro <see cref="System.String"/>
+  /// </returns>
+  private string ProcessaMapa(MessageMud mudMsg, MudCRoom roomIn, MudCPlayer senderPlayer)
+  {
+
+    // TODO: implementar!
+
+    string stReturnMsg = "";
+
+    if(mudMsg.nParam == 1) {
+      stReturnMsg += ""+
+   "::::::::::::::::::::::::::::::::::::::::::::::::::::::::"+
+   "::       ::       ::       ::       ::       ::       ::"+
+   "::       ::       ::       ::       ::       ::       ::"+
+   "::       ::       ::       ::       ::       ::       ::"+
+   "::       ::       ::       ::       ::       ::       ::"+
+   "::       ::       ::       ::       ::       ::       ::"+
+   "::       ::       ::       ::       ::       ::       ::"+
+   "::::::::::::::::::::::::::::::::::::::::::::::::::::::::"+
+   ":::::::::         :::::::::::::::::::         ::::::::::"+
+   ":      ::         ::       ::      ::         ::       :"+
+   ":      ::         ::       ::      ::         ::       :"+
+   ":      ::         ::       ::      ::         ::       :"+
+   ":      ::         ::       ::      ::         ::       :"+
+   ":      ::         ::       ::      ::         ::       :"+
+   ":      ::         ::       ::      ::         ::       :"+
+   ":::::::::         :::::::::::::::::::         ::::::::::"+
+   ""+
+   ":::::::::                                     ::::::::::"+
+   ":       :                                     ::       :"+
+   ":       :                                     ::       :"+
+   ":       :                                     ::       :"+
+   ":       :                                     ::       :"+
+   ":       :                                     ::       :"+
+   ":       :                                     ::       :"+
+   ":::::::::                                     ::::::::::";
+
+    }
+    else {
+      // Comando e vários parâmetros
+      
+    }
+    
+    return stReturnMsg;
+  }
 		
 	
 	/// <summary>
