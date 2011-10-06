@@ -986,25 +986,34 @@ public class mud_regras : MonoBehaviour
       stReturnMsg += "::::::::::::::::::::::::::::::::::::::::::::::::::::::::\n";
 			stReturnMsg += "::       ::       ::       ::       ::       ::       ::\n";
 			stReturnMsg += "::       ::       ::       ::       ::       ::       ::\n";
-			stReturnMsg += "::   @   --   @   --   @   --   @   --   @   --   @   ::\n";
+			stReturnMsg += "::   3   --   4   --   5   --   8   --   9   --  10    :\n";
 			stReturnMsg += "::       --       --       --       --       --       ::\n";
 			stReturnMsg += "::       ::       ::       ::       ::       ::       ::\n";
 			stReturnMsg += "::       ::       ::       ::       ::       ::       ::\n";
 			stReturnMsg += "::::---:::::::::::::::---::::::---:::::::::::::::---::::\n";
 			stReturnMsg += "::       ::       ::       ::       ::       ::       ::\n";
 			stReturnMsg += "::       ::       ::       ::       ::       ::       ::\n";
-			stReturnMsg += "::   @   ::       ::   @   ::   @   ::       ::   @   ::\n";
+			stReturnMsg += "::   2   ::       ::   6   ::   7   ::       ::  11    :\n";
 			stReturnMsg += "::       ::       ::       ::       ::       ::       ::\n";
 			stReturnMsg += "::       ::       ::       ::       ::       ::       ::\n";
 			stReturnMsg += "::       ::       ::       ::       ::       ::       ::\n";
 			stReturnMsg += "::::---::::       ::::::::::::::::::::       ::::---::::\n";
 			stReturnMsg += "::       ::                                  ::       ::\n";
 			stReturnMsg += "::       ::                                  ::       ::\n";
-			stReturnMsg += "::   @   ::                                  ::   @   ::\n";
+			stReturnMsg += "::   1   ::                                  ::  12    :\n";
 			stReturnMsg += "::       ::                                  ::       ::\n";
 			stReturnMsg += "::       ::                                  ::       ::\n";
 			stReturnMsg += "::       ::                                  ::       ::\n";
 			stReturnMsg += ":::::::::::                                  :::::::::::\n";
+
+      for(int x=1; x<=12; x++){
+        string nomeSala = "Room"+x.ToString();
+        string replace = " "+x.ToString()+" ";
+        if(roomIn.name == nomeSala)
+          stReturnMsg = stReturnMsg.Replace(replace," X ");
+        else
+          stReturnMsg = stReturnMsg.Replace(replace,"   ");
+      }
 
     }
     else {
