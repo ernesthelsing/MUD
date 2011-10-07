@@ -748,6 +748,7 @@ public class mud_regras : MonoBehaviour
 		// TODO: implementar!
 		
 		string stReturnMsg = "";
+    string stMsgToOthersAux = "";
 		
 		if(mudMsg.nParam == 1) {
 			// Somente o comando
@@ -799,10 +800,12 @@ public class mud_regras : MonoBehaviour
                     if(door.GetComponent<MudCDoor>().Locked) {
                       door.GetComponent<MudCDoor>().Locked = false;
                       stReturnMsg += "A porta foi destrancada";
+                      stMsgToOthersAux += "A porta " + stDirection + " foi destrancada.";
                       usou = true;
                     }else{
                       door.GetComponent<MudCDoor>().Locked = true;
                       stReturnMsg += "A porta foi trancada";
+                      stMsgToOthersAux += "A porta " + stDirection + " foi trancada.";
                       usou = true;
                     }
                   }else{
@@ -817,6 +820,7 @@ public class mud_regras : MonoBehaviour
               // Avisa o restante dos jogadores
               if(usou){
   						  string stMsgToOthers = "Jogador '" + senderPlayer.Name + "' usou o objeto '" + objeto.Name + "' nesta sala.";
+                stMsgToOthers += stMsgToOthersAux;
   						  TellEverybodyElseInThisRoom(roomIn, senderPlayer, stMsgToOthers);
               }
   						break;
@@ -915,14 +919,16 @@ public class mud_regras : MonoBehaviour
       stReturnMsg += "Parametros invalidos.";
 		}
 		else {
+
       MudCPlayer player;
+
       if(GameObject.Find(mudMsg.stParam1)){
         stReturnMsg += "(To)"+mudMsg.stParam1+":"+mudMsg.stParam2;
         player = GameObject.Find(mudMsg.stParam1).GetComponent<MudCPlayer>();
-        string msgCochichar = senderPlayer.name+":"+mudMsg.stParam2;
+        string msgCochichar = senderPlayer.name+" cochichou:"+mudMsg.stParam2;
   			scriptServer.SendChatMessageTo(player.GetNetworkPlayer(), msgCochichar);
       }else{
-        stReturnMsg += "Jogador nao Existe.";
+        stReturnMsg += "Jogador '" + mudMsg.stParam1 + "' nao existe.";
       }
 		}
 		
@@ -944,21 +950,19 @@ public class mud_regras : MonoBehaviour
 	private string ProcessaAjuda(MessageMud mudMsg, MudCRoom roomIn, MudCPlayer senderPlayer)
 	{
 	
-		// TODO: implementar!
-		
 		string stReturnMsg = "";
-		
-		if(mudMsg.nParam == 1) {
-			// Somente o comando
-		}
-		else if(mudMsg.nParam == 2) {
-			// Comando e 1 parâmetro
-		}
-		else {
-			// Comando e vários parâmetros
-			
-		}
-		
+
+    stReturnMsg += "Examinar: examina a sala inteira, ou qualquer objeto usando 'examinar objeto'\n\n";
+    stReturnMsg += "Mover: indique uma direcao de movimento (norte, sul, leste e oeste). Somente e' possivel se mover atraves de portas destrancadas.\n\n";
+    stReturnMsg += "Pegar: indique o objeto a ser coletado, ele será adicionado ao seu inventario. Exemplo: 'pegar porrete'.\n\n";
+    stReturnMsg += "Largar: indique o objeto de seu inventario para ser largado na sala atual: Exemplo: 'largar porrete'.\n\n";
+    stReturnMsg += "Inventorio: lista todos os objetos que voce esta carregando.\n\n";
+    stReturnMsg += "Usar: usa um objeto de seu inventario. Dependendo do objeto, tambem e' necesario indicar um alvo. Exemplo: 'usar porrete jogador_5'\n\n";
+    stReturnMsg += "Falar: escreva um texto que sera enviado para todos os jogadores presentes na mesma sala que voce.\n\n";
+    stReturnMsg += "Cochichar: escreva um texto e especifique o jogador. Somente este jogadore recebera a mensagem, desde que esteja na mesma sala que voce.\n\n";
+    stReturnMsg += "Ajuda: apresenta a ajuda de todos os comandos (como voce ja notou).\n\n";
+    stReturnMsg += "Mapa: mostra o mapa do mundo e sua posicao atual.\n\n";
+
 		return stReturnMsg;
 	}
 
